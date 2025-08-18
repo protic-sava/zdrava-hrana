@@ -1,0 +1,14 @@
+wp-admin/
+wp-includes/
+wp-*.php
+
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.orig
+*.save
+
+.DS_Store
+Thumbs.db
