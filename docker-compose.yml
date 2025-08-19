@@ -1,51 +1,39 @@
-name: zdrava_hrana
+# name: zdrava_hrana
 
-services:
-  wordpress:
-    container_name: zdrava_hrana-wordpress
-    build:
-      context: ./wordpress
-      dockerfile: Dockerfile
-    env_file: .env
-    depends_on:
-      db:
-        condition: service_healthy
-    ports:
-      - "8080:80"
-    volumes:
-      - wp-content:/var/www/html/wp-content
-    networks:
-      - zdrava_mreza
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    restart: always
+wordpress:
+  container_name: zdrava_hrana-wordpress
+  image: gcr.io/zdrava-hrana-469509/wordpress:latest
+  env_file: .env
+  depends_on:
+    db:
+      condition: service_healthy
+  ports:
+    - "80:80"
+    # - "8080:80"
+  volumes:
+    - wp-content:/var/www/html/wp-content
+  networks:
+    - zdrava_mreza
+  healthcheck:
+    test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
+    interval: 30s
+    timeout: 10s
+    retries: 5
+  restart: always
 
-  db:
-    container_name: zdrava_hrana-db
-    build:
-      context: ./db
-      dockerfile: Dockerfile
-    env_file: .env
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - zdrava_mreza
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: always
-
-networks:
-  zdrava_mreza:
-    driver: bridge
-
-volumes:
-  wp-content:
-  mysql_data:
+db:
+  container_name: zdrava_hrana-db
+  image: gcr.io/zdrava-hrana-469509/db:latest
+  env_file: .env
+  ports:
+    - "3306:3306"
+  volumes:
+    - mysql_data:/var/lib/mysql
+  networks:
+    - zdrava_mreza
+  healthcheck:
+    test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+    interval: 10s
+    timeout: 5s
+    retries: 5
+  restart: always
