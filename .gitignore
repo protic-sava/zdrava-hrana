@@ -1,3 +1,5 @@
+# .env
+
 wp-admin/
 wp-includes/
 wp-*.php
